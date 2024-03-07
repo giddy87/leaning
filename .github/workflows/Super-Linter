@@ -1,0 +1,28 @@
+name: Super-Linter
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  super-lint:
+    name: Lint code base
+
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Checkout code
+
+    -name: Run Super-Linter
+     uses: github/super-linter@v3
+     env:
+       DEFAULT_BRANCH: main
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+       
+     #run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
