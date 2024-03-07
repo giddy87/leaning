@@ -5,8 +5,9 @@ on:
     branches:
       - master
 jobs:
-  uses: build_docker_image
-  stage: build
+  -build_docker_image
+  stage:
+   build
   rules:
     - if: $CI_COMMIT_BRANCH == 'master'
   script:
