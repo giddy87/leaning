@@ -6,7 +6,6 @@ on:
       - master
 jobs: 
 -build_docker_image build
-
 run:
 - echo "Generated image tag is $IMAGE_TAG" - docker build -t
     obike007/vue:webapp-${{ github.sha }} .
