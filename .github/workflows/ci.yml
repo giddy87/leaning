@@ -1,18 +1,15 @@
+---
 name: workflows
-
 on:
   push:
     branches:
       - master
-jobs:
-  -build_docker_image
-  stage:
-   build
-  rules:
-    - if: $CI_COMMIT_BRANCH == 'master'
-  script:
-    - echo "Generated image tag is $IMAGE_TAG"
-    - docker build -t obike007/vue:webapp-${{ github.sha }} .
+jobs: 
+-build_docker_image build
+
+run:
+- echo "Generated image tag is $IMAGE_TAG" - docker build -t
+    obike007/vue:webapp-${{ github.sha }} .
 run-name:
   stage: push
   rules:
@@ -21,8 +18,6 @@ run-name:
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
   script:
     - docker push obike007/vue:webapp-${{ github.sha }} .
-    #- docker rmi giddy87/vue:webapp-${{ github.sha }} .
-
 deploy_to_dev:
   stage: deploy
   rules:
@@ -32,10 +27,12 @@ deploy_to_dev:
     - git config --global user.email "pipeline_user@thebulb.com"
     - git config --global user.name "pipeline"
   script:
-    - git remote set-url origin http://${PIPELINE_TOKEN}@localhost/root/gitops.git
+    - git remote set-url origin
+      http://${PIPELINE_TOKEN}@localhost/root/gitops.git
     - git clone http://pipeline:${PIPELINE_TOKEN}@localhost/root/gitops.git
     - cd gitops
-    - sed -i 's/vue:webapp-.*/'vue:webapp-"$${{ github.sha }} ."'/g' dev/deployment.yaml
+    - sed -i 's/vue:webapp-.*/'vue:webapp-"$${{ github.sha }} ."'/g'
+      dev/deployment.yaml
     - cat dev/deployment.yaml
     - git add dev/deployment.yaml
     - git commit -m "Updated vue test app Dev env k8s manifest files"
