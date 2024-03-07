@@ -1,38 +1,56 @@
----
 name: workflows
+
 on:
   push:
     branches:
       - master
-jobs: 
--build_docker_image build
-run:
-- echo "Generated image tag is $IMAGE_TAG" - docker build -t
-    obike007/vue:webapp-${{ github.sha }} .
-run-name:
-  stage: push
-  rules:
-    - if: $CI_COMMIT_BRANCH == 'master'
-  before_script:
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-  script:
-    - docker push obike007/vue:webapp-${{ github.sha }} .
-deploy_to_dev:
-  stage: deploy
-  rules:
-    - if: $CI_COMMIT_BRANCH == 'master'
-  environment: dev
-  before_script:
-    - git config --global user.email "pipeline_user@thebulb.com"
-    - git config --global user.name "pipeline"
-  script:
-    - git remote set-url origin
-      http://${PIPELINE_TOKEN}@localhost/root/gitops.git
-    - git clone http://pipeline:${PIPELINE_TOKEN}@localhost/root/gitops.git
-    - cd gitops
-    - sed -i 's/vue:webapp-.*/'vue:webapp-"$${{ github.sha }} ."'/g'
-      dev/deployment.yaml
-    - cat dev/deployment.yaml
-    - git add dev/deployment.yaml
-    - git commit -m "Updated vue test app Dev env k8s manifest files"
-    - git push
+
+jobs:
+  build_docker_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        run: |
+          echo "Generated image tag is ${{ github.sha }}"
+          docker build -t obike007/vue:webapp-${{ github.sha }} .
+
+  push_image_to_registry:
+    runs-on: ubuntu-latest
+    needs: build_docker_image
+    steps:
+      - name: Login to Docker Registry
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+      - name: Push Docker Image to Registry
+        run: docker push obike007/vue:webapp-${{ github.sha }}
+
+  deploy_to_dev:
+    runs-on: ubuntu-latest
+    needs: push_image_to_registry
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Update Kubernetes Manifests
+        run: |
+          sed -i 's/vue:webapp-.*/vue:webapp-${{ github.sha }}/g' dev/deployment.yaml
+          cat dev/deployment.yaml
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "pipeline_user@thebulb.com"
+          git config --global user.name "pipeline"
+
+      - name: Clone GitOps Repository
+        run: git clone http://pipeline:${{ secrets.PIPELINE_TOKEN }}@localhost/root/gitops.git
+
+      - name: Commit and Push Changes
+        run: |
+          cd gitops
+          git checkout -b update-dev-env
+          git add dev/deployment.yaml
+          git commit -m "Update Vue.js test app Dev env k8s manifest files"
+          git push origin update-dev-env
