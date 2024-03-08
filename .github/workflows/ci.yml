@@ -44,7 +44,7 @@ jobs:
           git config --global user.name "pipeline"
 
       - name: Clone gitops Repository
-        run: git -f clone http://pipeline:${{ secrets.PIPELINE_TOKEN }}@localhost/root/gitops.git
+        run: git clone -f http://pipeline:${{ secrets.PIPELINE_TOKEN }}@localhost/root/gitops.git
 
       - name: Commit and Push Changes
         run: |
