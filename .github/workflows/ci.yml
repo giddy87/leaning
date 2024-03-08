@@ -15,7 +15,7 @@ jobs:
       - name: Build Docker Image
         run: |
           echo "Generated image tag is ${{ github.sha }}"
-          docker build -t obike007/vue:webapp-${{ github.sha }} .
+          docker build -t obike007/vue:webapp-${{ github.sha }} /vue-test-app
 
   push_image_to_registry:
     runs-on: ubuntu-latest
