@@ -1,5 +1,4 @@
 name: workflows
-runs-on: self-hosted`
 on:
   push:
     branches:
@@ -7,7 +6,7 @@ on:
 
 jobs:
   build_docker_image:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -18,7 +17,7 @@ jobs:
           docker build -t obike007/vue:webapp-${{ github.sha }} -f ./vue-test-app/Dockerfile ./vue-test-app
 
   push_image_to_registry:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: build_docker_image
     steps:
       - name: Login to Docker Registry
@@ -28,7 +27,7 @@ jobs:
         run: docker push obike007/vue:webapp-${{ github.sha }}
 
   deploy_to_dev:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     needs: push_image_to_registry
     steps:
       - name: Checkout Repository
