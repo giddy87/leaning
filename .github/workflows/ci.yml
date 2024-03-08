@@ -35,8 +35,8 @@ jobs:
 
       - name: Update Kubernetes Manifests
         run: |
-          sed -i 's/vue:webapp-.*/vue:webapp-${{ github.sha }}/g' dev/deployment.yaml
-          cat dev/deployment.yaml
+          sed -i 's/vue:webapp-.*/vue:webapp-${{ github.sha }}/g' -f ./dev/deployment.yaml
+          cat ./dev/deployment.yaml
 
       - name: Configure Git
         run: |
@@ -50,6 +50,6 @@ jobs:
         run: |
           cd gitops
           git checkout -b update-dev-env
-          git add dev/deployment.yaml
+          git add ./dev/deployment.yaml
           git commit -m "Update Vue.js test app Dev env k8s manifest files"
           git push origin update-dev-env
