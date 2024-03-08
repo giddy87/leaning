@@ -43,12 +43,12 @@ jobs:
           git config --global user.email "pipeline_user@thebulb.com"
           git config --global user.name "pipeline"
 
-      - name: Clone GitOps Repository
-        run: git clone http://pipeline:${{ secrets.PIPELINE_TOKEN }}@localhost/root/gitops.git
+      - name: Clone workflows Repository
+        run: git clone http://pipeline:${{ secrets.PIPELINE_TOKEN }}@localhost/root/workflows.git
 
       - name: Commit and Push Changes
         run: |
-          cd gitops
+          cd workflows
           git checkout -b update-dev-env
           git add ./workflows/deployment.yaml
           git commit -m "Update Vue.js test app Dev env k8s manifest files"
