@@ -37,20 +37,8 @@ jobs:
         run: |
           sed -i 's/vue:webapp-.*/vue:webapp-${{ github.sha }}/g' ./workflows/deployment.yaml
           cat ./workflows/deployment.yaml
+          git add workflows/deployment.yaml
+          git commit -m "Updated vue test app Dev env k8s manifest files"
+          git push
 
-      - name: Configure Git
-        run: |
-          git config --global user.email "pipeline_user@thebulb.com"
-          git config --global user.name "pipeline"
-
-      - name: Add Changes to Staging Area
-        run: |
-          git add ./workflows/deployment.yaml
-
-      - name: Commit Changes
-        run: |
-          git commit -m "Update Vue.js test app Dev env k8s manifest files"
-
-      - name: Push Changes
-        run: |
-          git push origin HEAD:refs/heads/update-dev-env
+     
