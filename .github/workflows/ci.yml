@@ -45,10 +45,10 @@ jobs:
 
       - name: Clone workflows Repository
         run: git clone https://username:${{ secrets.PIPELINE_TOKEN }}@github.com/obike007/learning.git
-             cd learning
              
       - name: Commit and Push Changes
         run: |
+          cd learning
           git checkout -b update-dev-env
           git add deployment.yaml
           git commit -m "Update Vue.js test app Dev env k8s manifest files"
