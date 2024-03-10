@@ -19,13 +19,19 @@ spec:
           ports:
             - containerPort: 80 
           imagePullPolicy: Always
-          volumeMounts:
-          - mountPath: /etc/test
-            name: test-mnty
-      volumes:
-      - name: test-mnty
-        hostPath:
-          path: /etc/vue
-          type: Directory
-         
-      
+      #imagePullSecrets: 
+      #  - name: docker-cred 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name:  vue-testapp
+  namespace: dev
+spec:
+  selector:
+    app: vue-testapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort
