@@ -51,7 +51,7 @@ jobs:
           cd workflows
           git checkout -b update-dev-env || true
           git add deployment.yaml
-          git add ../learning/
+          git add ../learning/jobs/
           git commit -m "Update Vue.js test app Dev env k8s manifest files"
           git push origin update-dev-env
 
